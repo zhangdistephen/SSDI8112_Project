@@ -17,7 +17,6 @@ Install these Python packages
 
 `templates` is the html templates used by Flask.
 
- ## Usage
  Start MySQL service and run
  ```shell script
 PATH="$PATH":/usr/local/mysql/bin
