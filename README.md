@@ -49,6 +49,51 @@ Start the Flask server
 
 Go to http://localhost:5000
 
-Test git.
- 
- 
+### Spike 3
+#### Mock
+If you use python3, just
+```python
+import unittest.mock as mock
+```
+you can use mock now.
+
+See `test_sample.py` for more details.
+
+#### Frontend React
+If you use mac
+
+1. Use `brew` to install `node`
+```shell script
+brew install node
+``` 
+
+Otherwise, Google "Install node" then follow that instructions.
+
+2. Check whether you successfully install node
+```shell script
+npm -v
+```
+
+3. Change directory to `frontend/movie_renting`
+```shell script
+cd frontend/movie_renting
+```
+
+4. Use `npm` to install all the dependencies.
+```shell script
+npm install
+```
+5. Make sure you have run the backend. If you can visit http://localhost:5000, then yes. 
+If not, follow these commands to run.
+```shell script
+cd ../..
+python app.py &
+cd frontend/movie_renting
+```
+
+6. Run your frontend.
+```shell script
+npm start
+```
+
+* Note, I have changed some codes in app.py, so first run `git pull` then do above all steps.
