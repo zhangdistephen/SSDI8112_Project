@@ -20,7 +20,9 @@ def after(response):
     g.db.close()
     return response
 
-
+# @app.route('/login')
+# def login():
+#     return render_template("login.html")
 @app.route('/')
 def main():
     cursor = g.db.cursor()
