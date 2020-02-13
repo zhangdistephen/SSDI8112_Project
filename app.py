@@ -1,6 +1,6 @@
 from flask import Flask
 from flaskext.mysql import MySQL
-from flask import render_template, g
+from flask import render_template, g, jsonify
 app = Flask(__name__)
 app.debug = True
 
@@ -23,12 +23,12 @@ def after(response):
 # @app.route('/login')
 # def login():
 #     return render_template("login.html")
-@app.route('/')
+@app.route('/api')
 def main():
     cursor = g.db.cursor()
     cursor.execute("select * from user")
     result = cursor.fetchall()
-    return render_template("index.html", result=result)
+    return jsonify({"items":result})
 
 if __name__ == '__main__':
     app.run()

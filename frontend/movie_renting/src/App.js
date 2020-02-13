@@ -1,18 +1,48 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      items: []
+    }
+  }
+  componentDidMount() {
+    fetch("/api", {
+      accept: 'application/json',
+    })
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.setState(
+              {items: result.items}
+          )
+        })
+  }
   render() {
+    const {items} = this.state;
+    const users = items.map((user, idx)=>(
+      <tr key={idx}>
+        <td>{user[0]}</td>
+        <td>{user[1]}</td>
+        <td>{user[2]}</td>
+      </tr>
+    ));
     return (
       <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload1.
-        </p>
+        <table style={{"width":"50%"}}>
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Age</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users}
+          </tbody>
+        </table>
       </div>
     );
   }
