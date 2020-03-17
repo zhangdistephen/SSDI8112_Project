@@ -1,4 +1,10 @@
 import React, { Component } from 'react';
+import {Link} from "react-router-dom";
+import Button from '@material-ui/core/Button'
+import Divider from '@material-ui/core/Divider';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 import './App.css';
 
 class App extends Component {
@@ -9,40 +15,47 @@ class App extends Component {
     }
   }
   componentDidMount() {
-    fetch("/api", {
-      accept: 'application/json',
-    })
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.setState(
-              {items: result.items}
-          )
-        })
+    // fetch("/api", {
+    //   accept: 'application/json',
+    // })
+    //   .then(res => res.json())
+    //   .then(
+    //     (result) => {
+    //       this.setState(
+    //           {items: result.items}
+    //       )
+    //     })
   }
   render() {
-    const {items} = this.state;
-    const users = items.map((user, idx)=>(
-      <tr key={idx}>
-        <td>{user[0]}</td>
-        <td>{user[1]}</td>
-        <td>{user[2]}</td>
-      </tr>
-    ));
+    // const {items} = this.state;
     return (
       <div className="App">
-        <table style={{"width":"50%"}}>
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Name</th>
-              <th>Age</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users}
-          </tbody>
-        </table>
+        <Grid container spacing={3} justify="center" alignItems="center" style={{marginTop: 200}}>
+          <Grid item xs={6}>
+            <Paper elevation={3}>
+              <Typography component="h1" variant="h5">
+                Welcome
+              </Typography>
+              <Grid container xs={12} justify="center" alignItems="center" style={{height: 200}}>
+                <Grid item xs={5} justify="center" alignItems="center">
+                  <Button variant="outlined" color="primary" component={Link} to={{
+                    pathname: '/user',
+                    search: "?isRegister=1",
+                  }}>
+                    Create User
+                  </Button>
+                </Grid>
+                <Divider orientation="vertical" flexItem/>
+                <Grid item xs={5} justify="center" alignItems="center">
+                  <Button variant="outlined" color="default" component={Link} to={{
+                    pathname: '/user',
+                    search: "?isRegister=0",
+                  }}>Sign in</Button>
+                </Grid>
+              </Grid>
+            </Paper>
+          </Grid>
+        </Grid>
       </div>
     );
   }

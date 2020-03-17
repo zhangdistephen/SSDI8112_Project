@@ -1,7 +1,7 @@
 #spike 4 SD
 from flask import Flask
 from flaskext.mysql import MySQL
-from flask import render_template, g, jsonify
+from flask import render_template, g, jsonify, request
 app = Flask(__name__)
 app.debug = True
 
@@ -20,6 +20,20 @@ def before():
 def after(response):
     g.db.close()
     return response
+
+@app.route("/api/create_user", methods=['POST'])
+def create_user():
+    cursor = g.db.cursor()
+    data = request.json
+    username, password = data["username"], data["password"]
+    cursor.execute("select username from user where username='{}'".format(username))
+    exist = cursor.fetchall()
+    if exist:
+        return jsonify({"code":1, "msg":"username {} already exists".format(username)})
+    else:
+        cursor.execute("insert into user (username, password) values (%s, %s)", [username, password])
+        g.db.commit()
+        return jsonify({"code":0, "msg":"success"})
 
 @app.route('/api')
 def main():
