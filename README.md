@@ -99,3 +99,54 @@ npm start
 
 Test2
 Test spike 4
+## Sprint 1
+
+**Backend:**
+
+We need to initialize a user table, which should have USERNAME and PASSWORD at least.
+
+```mysql
+Drop table sample.user;
+create table sample.user
+(user_id bigint null auto_increment, username varchar(45) null, password varchar(45) null, primary key (user_id));
+```
+
+And restful api, which accepts json format data which has "username" and "password", 
+then execute a line of sql to check whether the database already has this username, if not, insert this user to our database.
+```python
+@app.route("/api/create_user", methods=['POST'])
+def create_user():
+    cursor = g.db.cursor()
+    data = request.json
+    username, password = data["username"], data["password"]
+    cursor.execute("select username from user where username='{}'".format(username))
+    exist = cursor.fetchall()
+    if exist:
+        return jsonify({"code":1, "msg":"username {} already exists".format(username)})
+    else:
+        cursor.execute("insert into user (username, password) values (%s, %s)", [username, password])
+        g.db.commit()
+        return jsonify({"code":0, "msg":"success"})
+```
+
+Then run the backend.
+
+```shell script
+python app.py
+```
+
+**Frontend:**
+
+Install 2 packages, react-router-dom and @material-ui/core.
+```shell script
+cd frontend/movie_renting
+npm install
+```
+
+Run it
+
+```shell script
+npm start
+```
+
+For now, I just wrote `App.js index.js User.js`, you can modify these 3 files to learn how it works.

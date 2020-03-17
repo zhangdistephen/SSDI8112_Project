@@ -16,7 +16,6 @@ class User extends Component{
     super(props);
     // let isRegister = props.location.search.isRegister;
     let s = queryString.parse(location.search);
-    console.log(s);
     let isRegister = ("isRegister" in s)?parseInt(s.isRegister):0;
     this.state = {
       username:"",
@@ -54,7 +53,6 @@ class User extends Component{
   render() {
     return (
       <Container maxWidth="xs">
-
         <div style={login_style}>
           <Typography component="h1" variant="h5">
             {this.state.isRegister?"Register":"Sign in(Developing)"}

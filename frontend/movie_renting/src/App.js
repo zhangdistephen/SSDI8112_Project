@@ -15,16 +15,6 @@ class App extends Component {
     }
   }
   componentDidMount() {
-    // fetch("/api", {
-    //   accept: 'application/json',
-    // })
-    //   .then(res => res.json())
-    //   .then(
-    //     (result) => {
-    //       this.setState(
-    //           {items: result.items}
-    //       )
-    //     })
   }
   render() {
     // const {items} = this.state;
