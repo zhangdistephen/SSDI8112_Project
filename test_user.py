@@ -35,6 +35,14 @@ class UserTestCase(unittest.TestCase):
         json_data = rv.get_json()
         return json_data
 
+    def login(self):
+        rv = self.app.post('/api/login', json={
+            "username": "example",
+            "password": "123456"
+        })
+        json_data = rv.get_json()
+        return json_data
+
     def test_access(self):
         rv = self.app.get('/api')
         self.assertEqual(rv.status_code, 200)
@@ -45,6 +53,11 @@ class UserTestCase(unittest.TestCase):
 
     def test_create_user(self):
         json_data = self.create_user()
+        self.assertEqual(json_data["code"], 0)
+
+    def test_login(self):
+        self.create_user()
+        json_data = self.login()
         self.assertEqual(json_data["code"], 0)
 
     def test_create_existing_user(self):

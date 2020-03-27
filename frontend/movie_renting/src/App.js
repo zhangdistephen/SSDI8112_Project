@@ -40,7 +40,7 @@ class App extends Component {
                   <Button variant="outlined" color="default" component={Link} to={{
                     pathname: '/user',
                     search: "?isRegister=0",
-                  }}>Sign in</Button>
+                  }}>Log in</Button>
                 </Grid>
               </Grid>
             </Paper>

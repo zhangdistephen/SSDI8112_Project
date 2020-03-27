@@ -35,6 +35,19 @@ def create_user():
         g.db.commit()
         return jsonify({"code":0, "msg":"success"})
 
+@app.route("/api/login", methods=["POST"])
+def login():
+    cursor = g.db.cursor()
+    data = request.json
+    username, password = data["username"], data["password"]
+    cursor.execute("select username from user where username='{}'".format(username))
+    exist = cursor.fetchall()
+    if not exist:
+        return jsonify({"code":1, "msg":"username {} is incorrect".format(username)})
+    else:
+        user = data["username"]
+        return jsonify({"code":0, "msg":"success", "user":user})
+
 @app.route('/api')
 def main():
     cursor = g.db.cursor()
