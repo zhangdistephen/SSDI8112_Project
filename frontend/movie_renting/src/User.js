@@ -58,7 +58,7 @@ class User extends Component{
       <Container maxWidth="xs">
         <div style={login_style}>
           <Typography component="h1" variant="h5">
-            {this.state.isRegister?"Register":"Log in(Developing)"}
+            {this.state.isRegister?"Register":"Log in"}
           </Typography>
           <form noValidate>
             <TextField id="username" onChange={e => this.setState({username:e.target.value})} label="Username" variant="outlined" margin="normal" fullWidth/>
