@@ -3,7 +3,7 @@ import unittest
 import json
 from flask_sqlalchemy import SQLAlchemy
 from init_db import init_db
-class UserTestCase(unittest.TestCase):
+class MovieTestCase(unittest.TestCase):
 
     def setUp(self):
         app = project.app
@@ -30,35 +30,27 @@ class UserTestCase(unittest.TestCase):
         json_data = rv.get_json()
         return json_data
 
-    def login(self):
-        rv = self.app.post('/api/login', json={
-            "username": "example",
-            "password": "123456"
-        })
-        json_data = rv.get_json()
-        return json_data
-
-    def test_access(self):
-        rv = self.app.get('/api')
-        self.assertEqual(rv.status_code, 200)
-
-    def test_get_all_users(self):
-        rv = self.app.get('/api')
-        self.assertIn('items', json.loads(rv.data))
-
-    def test_create_user(self):
-        json_data = self.create_user()
+    def test_get_movies(self):
+        json_data = self.app.get("/api/get_movies").get_json()
         self.assertEqual(json_data["code"], 0)
 
-    def test_login(self):
-        self.create_user()
-        json_data = self.login()
+    def test_upload(self):
+        json_data = self.app.post("/api/upload_movie", json={
+            "name":"1",
+            "desc":"1",
+            "img":"1"
+        }).get_json()
         self.assertEqual(json_data["code"], 0)
 
-    def test_create_existing_user(self):
+    def test_rent(self):
         self.create_user()
-        json_data = self.create_user()
-        self.assertEqual(json_data["code"], 1)
+        json_data = self.app.post("/api/rent", json={
+            "user":"example",
+            "movie":1
+        }).get_json()
+        self.assertEqual(json_data["code"], 0)
+
+
 
 
 if __name__ == '__main__':
