@@ -149,4 +149,56 @@ Run it
 npm start
 ```
 
-For now, I just wrote `App.js index.js User.js`, you can modify these 3 files to learn how it works.
+## Sprint 2
+
+Use a ORM framework `flask_sqlalchemy` which releases us from tedious SQL query. 
+Instead, we can consider Database Table as an Object.
+
+For example:
+
+If we want to check whether the user with some username exists, we need to write this SQL query.
+```python
+cursor.execute("select username from user where username='{}'".format(username))
+exist = cursor.fetchall()
+```
+With the help of `flask_sqlalchemy`, we can write like this:
+```python
+exist = User.query.filter_by(username=username).first()
+```
+It is more convenient.
+
+So the `create_user` api now looks like:
+```python
+@app.route("/api/create_user", methods=['POST'])
+def create_user():
+    data = request.json
+    username, password = data["username"], data["password"]
+    exist = User.query.filter_by(username=username).first()
+    if exist:
+        return jsonify({"code":1, "msg":"username {} already exists".format(username)})
+    else:
+        user = User(username=username, password=password)
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({"code":0, "msg":"success"})
+```
+
+### Fake data
+
+Besides, I download some fake data from [here](https://www.mockaroo.com/).
+
+First, we need to use these fake data to initialize our database.
+
+```shell script
+python init_db.py
+```
+
+Then, run this command to start backend.
+```shell script
+python app.py
+```
+
+Last, run this command to start frontend.
+```shell script
+npm start
+```

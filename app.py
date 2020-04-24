@@ -1,59 +1,111 @@
 #spike 4 SD
 from flask import Flask
-from flaskext.mysql import MySQL
 from flask import render_template, g, jsonify, request
+from flask_sqlalchemy import SQLAlchemy
+
 app = Flask(__name__)
 app.debug = True
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:123456@localhost/sample"
 
-mysql = MySQL()
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = '123456'
-app.config['MYSQL_DATABASE_DB'] = 'sample'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-mysql.init_app(app)
+db = SQLAlchemy()
+db.init_app(app)
 
-@app.before_request
-def before():
-    g.db = mysql.connect()
+User_Movie = db.Table("user_movie",
+          db.Column("user_id", db.Integer, db.ForeignKey("user.id"), nullable=False, primary_key=True),
+          db.Column("movie_id", db.Integer, db.ForeignKey("movie.id"), nullable=False, primary_key=True)
+)
 
-@app.after_request
-def after(response):
-    g.db.close()
-    return response
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(120), unique=False, nullable=False)
+    movie = db.relationship("Movie", secondary=User_Movie)
+    def __repr__(self):
+        return '<User %r>' % self.username
+
+    def serialize(self):
+        return {
+            "id":self.id,
+            "username":self.username
+        }
+
+class Movie(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=False, nullable=False)
+    description = db.Column(db.String(500), unique=False, nullable=False)
+    img = db.Column(db.String(500), unique=False, nullable=False)
+    user = db.relationship("User", secondary=User_Movie)
+
+    def __repr__(self):
+        return '<Movie %r>' % self.name
+
+    def serialize(self):
+        return {
+            "id":self.id,
+            "name":self.name,
+            "desc":self.description,
+            "img":self.img
+        }
+
+@app.route("/api/upload_movie", methods=['POST'])
+def upload_movie():
+    data = request.json
+    name, desc, img = data["name"], data["desc"], data["img"]
+    movie = Movie(name=name, description=desc, img=img)
+    db.session.add(movie)
+    db.session.commit()
+    return jsonify({"code": 0, "msg": "success"})
+
+@app.route("/api/get_movies", methods=['GET'])
+def get_movies():
+    search = request.args.get("search")
+    if search:
+        movies = Movie.query.filter(Movie.name.like("%{}%".format(search))).all()
+    else:
+        movies = Movie.query.all()
+    return jsonify({"code": 0, "msg": "success", "data":list(map(lambda movie:movie.serialize(), movies))})
+
+@app.route("/api/rent", methods=['POST'])
+def rent():
+    data = request.json
+    username, movie_id = data["user"], data["movie"]
+    user = User.query.filter_by(username=username).first()
+    movie = Movie.query.filter_by(id=movie_id).first()
+    if movie in user.movie:
+        return jsonify({"code":1, "msg":"You've already rent this movie."})
+    user.movie.append(movie)
+    db.session.commit()
+    return jsonify({"code":0})
 
 @app.route("/api/create_user", methods=['POST'])
 def create_user():
-    cursor = g.db.cursor()
     data = request.json
     username, password = data["username"], data["password"]
-    cursor.execute("select username from user where username='{}'".format(username))
-    exist = cursor.fetchall()
+    exist = User.query.filter_by(username=username).first()
     if exist:
         return jsonify({"code":1, "msg":"username {} already exists".format(username)})
     else:
-        cursor.execute("insert into user (username, password) values (%s, %s)", [username, password])
-        g.db.commit()
+        user = User(username=username, password=password)
+        db.session.add(user)
+        db.session.commit()
         return jsonify({"code":0, "msg":"success"})
 
 @app.route("/api/login", methods=["POST"])
 def login():
-    cursor = g.db.cursor()
     data = request.json
     username, password = data["username"], data["password"]
-    cursor.execute("select username from user where username='{}'".format(username))
-    exist = cursor.fetchall()
+    exist = User.query.filter_by(username=username).first()
     if not exist:
         return jsonify({"code":1, "msg":"username {} is incorrect".format(username)})
     else:
-        user = data["username"]
-        return jsonify({"code":0, "msg":"success", "user":user})
+        if exist.password != password:
+            return jsonify({"code": 1, "msg": "password is incorrect"})
+        return jsonify({"code":0, "msg":"success", "user":username})
 
 @app.route('/api')
 def main():
-    cursor = g.db.cursor()
-    cursor.execute("select * from user")
-    result = cursor.fetchall()
-    return jsonify({"items":result})
+    result = User.query.all()
+    return jsonify({"items":list(map(lambda x:x.serialize(), result))})
 
 if __name__ == '__main__':
     app.run()

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import User from "./User";
 import Home from "./Home"
+import Upload from "./Upload";
 import Navigator from "./Navigator";
 import { BrowserRouter as Router, Switch, Route, Link,} from 'react-router-dom'
 import './index.css';
@@ -17,6 +18,10 @@ ReactDOM.render((
       <Route path="/home">
         <Navigator/>
         <Home/>
+      </Route>
+      <Route path="/upload">
+        <Navigator/>
+        <Upload/>
       </Route>
       <Route path="/">
         <Navigator/>
