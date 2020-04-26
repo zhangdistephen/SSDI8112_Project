@@ -67,7 +67,7 @@ def get_movies():
         movies = Movie.query.filter(Movie.name.like("%{}%".format(search))).all()
     else:
         movies = Movie.query.all()
-        movies = list(map(lambda movie:movie.serialize(), movies))
+    movies = list(map(lambda movie:movie.serialize(), movies))
     return jsonify({"code": 0, "msg": "success", "data": movies})
 
 @app.route("/api/rent", methods=['POST'])

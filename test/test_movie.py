@@ -38,7 +38,8 @@ class MovieTestCase(unittest.TestCase):
         json_data = self.app.post("/api/upload_movie", json={
             "name":"1",
             "desc":"1",
-            "img":"1"
+            "img":"1",
+            "price":1
         }).get_json()
         self.assertEqual(json_data["code"], 0)
 
