@@ -48,7 +48,7 @@ class CustomCard extends Component {
   }
 
   render() {
-    const {name, desc, img, price, own} = this.props;
+    const {name, desc, img, price, id} = this.props;
     return (
       <Card>
         <CardActionArea>
@@ -74,6 +74,7 @@ class CustomCard extends Component {
           </Button>
           <Button size="small" color="primary" component={Link} to={{
             pathname: '/comment',
+            search:"?movie_id="+id,
           }}>
             Comment
           </Button>

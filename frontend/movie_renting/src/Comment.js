@@ -12,16 +12,22 @@ class Comment extends Component{
 constructor(props) {
     super(props);
     // let isRegister = props.location.search.isRegister;
+    let s = queryString.parse(location.search);
+    let movie_id = parseInt(s.movie_id);
     this.state = {
       cmmt:"",
+      movie_id:movie_id,
+      open:false,
+      msg:"",
     };
   }
 
   handleClick(){
-  const cmmt = this.state;
+  const {cmmt, movie_id} = this.state;
+  const user = localStorage.getItem("user");
   if(cmmt){
       fetch("/api/comment",{
-      body: JSON.stringify(cmmt),
+      body: JSON.stringify({user, movie:movie_id, comment:cmmt}),
       method: 'POST',
       accept: 'application/json',
       headers: {
@@ -47,7 +53,7 @@ constructor(props) {
             Comment
           </Typography>
           <form noValidate>
-            <TextField id="cmmt" onChange={e => this.setState({desc:e.target.value})} label="Comment" multiline rows={4} variant="outlined" margin="normal" fullWidth/>
+            <TextField id="cmmt" onChange={e => this.setState({cmmt:e.target.value})} label="Comment" multiline rows={4} variant="outlined" margin="normal" fullWidth/>
             <Button variant="contained" color="primary" onClick={()=>this.handleClick()} fullWidth>Comment</Button>
             <Snackbar open={this.state.open} onClose={()=>this.handleClose()} message={this.state.msg}>
             </Snackbar>
