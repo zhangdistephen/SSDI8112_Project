@@ -36,6 +36,7 @@ class Movie(db.Model):
     name = db.Column(db.String(80), unique=False, nullable=False)
     description = db.Column(db.String(500), unique=False, nullable=False)
     img = db.Column(db.String(500), unique=False, nullable=False)
+    comment = db.Column(db.String(500), unique=False, nullable=True)
     price = db.Column(db.Float, nullable=False)
     user = db.relationship("User", secondary=User_Movie)
 
@@ -48,7 +49,8 @@ class Movie(db.Model):
             "name":self.name,
             "desc":self.description,
             "img":self.img,
-            "price": self.price
+            "price": self.price,
+            "comment":self.comment
         }
 
 @app.route("/api/upload_movie", methods=['POST'])
@@ -91,7 +93,8 @@ def comment():
     username, movie_id, comment = data["user"], data["movie"], data["comment"],
     user = User.query.filter_by(username=username).first()
     movie = Movie.query.filter_by(id=movie_id).first()
-    movie.comment.append(comment)
+    movie.comment  = comment
+    db.session.commit()
     return jsonify({"code":0,"msg":"posted"})
 
 @app.route("/api/create_user", methods=['POST'])

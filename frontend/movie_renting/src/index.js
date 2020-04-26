@@ -6,6 +6,7 @@ import Home from "./Home"
 import Upload from "./Upload";
 import Comment from "./Comment";
 import Navigator from "./Navigator";
+import Movie from "./Movie";
 import { BrowserRouter as Router, Switch, Route, Link,} from 'react-router-dom'
 import './index.css';
 
@@ -30,6 +31,11 @@ ReactDOM.render((
       <Route path="/comment">
         <Navigator>
           <Comment/>
+        </Navigator>
+      </Route>
+      <Route path="/movie">
+        <Navigator>
+          <Movie/>
         </Navigator>
       </Route>
       <Route path="/">

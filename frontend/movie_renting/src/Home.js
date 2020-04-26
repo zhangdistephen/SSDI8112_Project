@@ -52,6 +52,7 @@ class CustomCard extends Component {
     return (
       <Card>
         <CardActionArea>
+          <Link to={"/movie?movie_id="+id} style={{ textDecoration: 'none' }}>
           <CardMedia
             component="img"
             alt={name}
@@ -67,6 +68,7 @@ class CustomCard extends Component {
               {desc}
             </Typography>
           </CardContent>
+          </Link>
         </CardActionArea>
         <CardActions>
           <Button size="small" color="primary" onClick={this.handleClick.bind(this)}>

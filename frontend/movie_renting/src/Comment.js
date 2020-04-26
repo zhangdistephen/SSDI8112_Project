@@ -19,6 +19,7 @@ constructor(props) {
       movie_id:movie_id,
       open:false,
       msg:"",
+      error:1
     };
   }
 
@@ -59,7 +60,7 @@ constructor(props) {
             </Snackbar>
           </form>
         </div>
-        {this.state.error === 0?<Redirect to="/home"/>:<div/>}
+        {this.state.error === 0?<Redirect to={"/movie?movie_id="+this.state.movie_id}/>:<div/>}
       </Container>
     );
   }
