@@ -4,6 +4,7 @@ import App from './App';
 import User from "./User";
 import Home from "./Home"
 import Upload from "./Upload";
+import Comment from "./Comment";
 import Navigator from "./Navigator";
 import { BrowserRouter as Router, Switch, Route, Link,} from 'react-router-dom'
 import './index.css';
@@ -24,6 +25,11 @@ ReactDOM.render((
       <Route path="/upload">
         <Navigator>
           <Upload/>
+        </Navigator>
+      </Route>
+      <Route path="/comment">
+        <Navigator>
+          <User/>
         </Navigator>
       </Route>
       <Route path="/">

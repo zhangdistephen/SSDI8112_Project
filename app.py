@@ -85,6 +85,15 @@ def rent():
     db.session.commit()
     return jsonify({"code":0, 'balance':user.balance})
 
+@app.route("/api/comment",methods=['POST'])
+def comment():
+    data = request.json
+    username, movie_id, comment = data["user"], data["movie"], data["comment"],
+    user = User.query.filter_by(username=username).first()
+    movie = Movie.query.filter_by(id=movie_id).first()
+    movie.comment.append(comment)
+    return jsonify({"code":0,"msg":"posted"})
+
 @app.route("/api/create_user", methods=['POST'])
 def create_user():
     data = request.json
