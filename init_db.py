@@ -16,7 +16,7 @@ def init_db():
     db.create_all()
     df = process_csv(os.path.join(dirname, "fake_data.csv"))
     for _, row in df.iterrows():
-        movie = Movie(name=row["name"], description=row["description"], img="https://source.unsplash.com/random")
+        movie = Movie(name=row["name"], description=row["description"], img="https://source.unsplash.com/random", price=row["price"])
         db.session.add(movie)
     db.session.commit()
 

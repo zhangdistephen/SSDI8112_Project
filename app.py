@@ -19,6 +19,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), unique=False, nullable=False)
+    balance = db.Column(db.Float, unique=False, nullable=False, default=100)
     movie = db.relationship("Movie", secondary=User_Movie)
     def __repr__(self):
         return '<User %r>' % self.username
@@ -26,7 +27,8 @@ class User(db.Model):
     def serialize(self):
         return {
             "id":self.id,
-            "username":self.username
+            "username":self.username,
+            "balance": self.balance
         }
 
 class Movie(db.Model):
@@ -34,6 +36,7 @@ class Movie(db.Model):
     name = db.Column(db.String(80), unique=False, nullable=False)
     description = db.Column(db.String(500), unique=False, nullable=False)
     img = db.Column(db.String(500), unique=False, nullable=False)
+    price = db.Column(db.Float, nullable=False)
     user = db.relationship("User", secondary=User_Movie)
 
     def __repr__(self):
@@ -44,14 +47,15 @@ class Movie(db.Model):
             "id":self.id,
             "name":self.name,
             "desc":self.description,
-            "img":self.img
+            "img":self.img,
+            "price": self.price
         }
 
 @app.route("/api/upload_movie", methods=['POST'])
 def upload_movie():
     data = request.json
-    name, desc, img = data["name"], data["desc"], data["img"]
-    movie = Movie(name=name, description=desc, img=img)
+    name, desc, img, price = data["name"], data["desc"], data["img"], data["price"]
+    movie = Movie(name=name, description=desc, img=img, price=price)
     db.session.add(movie)
     db.session.commit()
     return jsonify({"code": 0, "msg": "success"})
@@ -63,7 +67,8 @@ def get_movies():
         movies = Movie.query.filter(Movie.name.like("%{}%".format(search))).all()
     else:
         movies = Movie.query.all()
-    return jsonify({"code": 0, "msg": "success", "data":list(map(lambda movie:movie.serialize(), movies))})
+        movies = list(map(lambda movie:movie.serialize(), movies))
+    return jsonify({"code": 0, "msg": "success", "data": movies})
 
 @app.route("/api/rent", methods=['POST'])
 def rent():
@@ -73,9 +78,12 @@ def rent():
     movie = Movie.query.filter_by(id=movie_id).first()
     if movie in user.movie:
         return jsonify({"code":1, "msg":"You've already rent this movie."})
+    if user.balance < movie.price:
+        return jsonify({"code":1, "msg":"Your balance is insufficient."})
+    user.balance -= movie.price
     user.movie.append(movie)
     db.session.commit()
-    return jsonify({"code":0})
+    return jsonify({"code":0, 'balance':user.balance})
 
 @app.route("/api/create_user", methods=['POST'])
 def create_user():
@@ -88,7 +96,7 @@ def create_user():
         user = User(username=username, password=password)
         db.session.add(user)
         db.session.commit()
-        return jsonify({"code":0, "msg":"success"})
+        return jsonify({"code":0, "msg":"success", "user":user.serialize()})
 
 @app.route("/api/login", methods=["POST"])
 def login():
@@ -100,7 +108,7 @@ def login():
     else:
         if exist.password != password:
             return jsonify({"code": 1, "msg": "password is incorrect"})
-        return jsonify({"code":0, "msg":"success", "user":username})
+        return jsonify({"code":0, "msg":"success", "user":exist.serialize()})
 
 @app.route('/api')
 def main():
