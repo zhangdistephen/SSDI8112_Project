@@ -20,18 +20,18 @@ constructor(props) {
   handleClick(){
   const cmmt = this.state;
   if(cmmt){
-  fetch("/api/comment",{
-  body: JSON.stringify(cmmt),
-  method: 'POST',
-  accept: 'application/json',
-  headers: {
-    'content-type':'application/json'
-    },
+      fetch("/api/comment",{
+      body: JSON.stringify(cmmt),
+      method: 'POST',
+      accept: 'application/json',
+      headers: {
+        'content-type':'application/json'
+        },
    })
     .then(res => res.json())
     .then(
         (result) => {
-            this.setState({open:true,error:0,msg:""})});
+            this.setState({open:true,error:0,msg:"Comment Uploaded"})});
     }else{
         this.setState({open:true, msg:"Empty text is not acceptable."});
     }
@@ -58,3 +58,4 @@ constructor(props) {
     );
   }
 }
+export default Comment;

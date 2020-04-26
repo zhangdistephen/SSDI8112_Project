@@ -29,7 +29,7 @@ ReactDOM.render((
       </Route>
       <Route path="/comment">
         <Navigator>
-          <User/>
+          <Comment/>
         </Navigator>
       </Route>
       <Route path="/">

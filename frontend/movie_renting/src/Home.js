@@ -46,24 +46,7 @@ class CustomCard extends Component {
   handleClose(){
     this.setState({open:false});
   }
-  leaveComment(){
-      const user = localStorage.getItem("user");
-        fetch("/api/comment", {
-            body: JSON.stringify({user, movie:this.props.id}),
-            method: 'POST',
-            accept: 'application/json',
-            headers: {
-              'content-type': 'application/json'
-            },
-          }).then(res=>res.json())
-          .then(res=>{
-            if(res.code === 0) {
-              this.setState({open: true, msg: "Comment Posted " + this.props.name});
-            } else{
-              this.setState({open: true, msg: res.msg});
-            }
-          })
-  }
+
   render() {
     const {name, desc, img, price, own} = this.props;
     return (
@@ -91,7 +74,7 @@ class CustomCard extends Component {
           </Button>
           <Button size="small" color="primary" component={Link} to={{
             pathname: '/comment',
-          }}onClick={this.leaveComment.bind(this)}>
+          }}>
             Comment
           </Button>
           <Typography variant="body2" component="p" style={{marginLeft:"auto", color:"green"}}>
