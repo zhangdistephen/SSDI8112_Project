@@ -5,6 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import queryString from "query-string"
 
 class Upload extends Component{
@@ -16,15 +17,16 @@ class Upload extends Component{
       error:1,
       name:"",
       desc:"",
-      img:""
+      img:"",
+      price: 0
     };
   }
 
   handleClick() {
-    const {name, desc, img} = this.state;
-    if(name&&desc&&img) {
+    const {name, desc, img, price} = this.state;
+    if(name&&desc&&img&&price) {
       fetch("/api/upload_movie", {
-        body: JSON.stringify({name, desc, img}),
+        body: JSON.stringify({name, desc, img, price}),
         method: 'POST',
         accept: 'application/json',
         headers: {
@@ -54,6 +56,7 @@ class Upload extends Component{
             <TextField id="name" onChange={e => this.setState({name:e.target.value})} label="Movie Name" variant="outlined" margin="normal" fullWidth/>
             <TextField id="desc" onChange={e => this.setState({desc:e.target.value})} label="Description" multiline rows={4} variant="outlined" margin="normal" fullWidth/>
             <TextField id="img" onChange={e => this.setState({img:e.target.value})} label="Image"  variant="outlined" margin="normal" fullWidth/>
+            <TextField id="price" onChange={e => this.setState({price:e.target.value})} label="Movie Price" variant="outlined" startAdornment={<InputAdornment position="start">$</InputAdornment>} margin="normal" fullWidth/>
             <Button variant="contained" color="primary" onClick={()=>this.handleClick()} fullWidth>Upload</Button>
             <Snackbar open={this.state.open} onClose={()=>this.handleClose()} message={this.state.msg}>
             </Snackbar>

@@ -26,6 +26,7 @@ class User extends Component{
       error: 1,
       isRegister:isRegister,
       showForm: 0,
+      balance:0
     };
   }
 
@@ -43,7 +44,10 @@ class User extends Component{
         .then(res => res.json())
         .then(
           (result) => {
-            localStorage.setItem("user",username);
+            if(result.code===0) {
+              localStorage.setItem("user", username);
+              localStorage.setItem("balance", result.user.balance);
+            }
             this.setState({open: true, msg: result.msg, error: result.code});
           });
     } else {

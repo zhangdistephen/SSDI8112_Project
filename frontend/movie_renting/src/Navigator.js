@@ -4,6 +4,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import {Link} from "react-router-dom"
+import Grid from '@material-ui/core/Grid';
+import Container from '@material-ui/core/Container';
+import Divider from '@material-ui/core/Divider';
 class Navigator extends Component {
   constructor(props) {
     super(props);
@@ -16,24 +19,24 @@ class Navigator extends Component {
 
   render() {
     return (
-      <div style={{flexGrow: 1}}>
-        <AppBar position="static">
+      <Grid container direction="column" style={{minHeight:"100vh"}}>
+        <AppBar position="static" style={{backgroundColor:"#f5f5f5"}}>
           <Toolbar>
-            <Typography variant="h6" style={{flexGrow: 1, textDecoration:"none"}} color="inherit" component={Link} to="/">
+            <Typography variant="h6" style={{textDecoration:"none"}} color="black" component={Link} to="/">
               Movie Renting System
             </Typography>
-            {this.props.user}
-            {/*<Button color="inherit" component={Link} to={{*/}
-            {/*  pathname: '/user',*/}
-            {/*  search: "?isRegister=1",*/}
-            {/*}}>Register /</Button>*/}
-            {/*<Button color="inherit" component={Link} to={{*/}
-            {/*  pathname: '/user',*/}
-            {/*  search: "?isRegister=0",*/}
-            {/*}}>Log in</Button>*/}
           </Toolbar>
         </AppBar>
-      </div>
+        <div style={{flex: "1", backgroundColor:"#ffffff"}}>
+          {this.props.children}
+        </div>
+        <Divider/>
+        <Grid container width="100%" style={{backgroundColor: '#f5f5f5', height:"100px"}} alignItems="center" justify="center" >
+          <Typography component="p" style={{  height: '100px', color:"black", lineHeight:"100px"}} >
+            Copyright © 2020
+          </Typography>
+        </Grid>
+      </Grid>
     )
   }
 

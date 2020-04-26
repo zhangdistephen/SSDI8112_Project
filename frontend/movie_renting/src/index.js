@@ -12,20 +12,24 @@ ReactDOM.render((
   <Router >
     <Switch>
       <Route path="/user">
-        <Navigator/>
-        <User/>
+        <Navigator>
+          <User/>
+        </Navigator>
       </Route>
       <Route path="/home">
-        <Navigator/>
-        <Home/>
+        <Navigator>
+          <Home/>
+        </Navigator>
       </Route>
       <Route path="/upload">
-        <Navigator/>
-        <Upload/>
+        <Navigator>
+          <Upload/>
+        </Navigator>
       </Route>
       <Route path="/">
-        <Navigator/>
-        <App/>
+        <Navigator>
+          <App/>
+        </Navigator>
       </Route>
     </Switch>
   </Router>),

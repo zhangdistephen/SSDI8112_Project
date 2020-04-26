@@ -36,8 +36,10 @@ class CustomCard extends Component {
       .then(res=>{
         if(res.code === 0) {
           this.setState({open: true, msg: "Successfully rent " + this.props.name});
+          localStorage.setItem("balance", res.balance);
+          this.props.changeBalance(res.balance);
         } else{
-          this.setState({open: true, msg: "Sorry, you've already rent " + this.props.name});
+          this.setState({open: true, msg: res.msg});
         }
       })
   }
@@ -45,7 +47,7 @@ class CustomCard extends Component {
     this.setState({open:false});
   }
   render() {
-    const {name, desc, img} = this.props;
+    const {name, desc, img, price, own} = this.props;
     return (
       <Card>
         <CardActionArea>
@@ -69,6 +71,9 @@ class CustomCard extends Component {
           <Button size="small" color="primary" onClick={this.handleClick.bind(this)}>
             Rent
           </Button>
+          <Typography variant="body2" component="p" style={{marginLeft:"auto", color:"green"}}>
+              ${price}
+            </Typography>
         </CardActions>
         <Snackbar open={this.state.open} onClose={this.handleClose.bind(this)} message={this.state.msg}/>
       </Card>
@@ -78,8 +83,10 @@ class CustomCard extends Component {
 class Home extends Component{
   constructor() {
     super();
+    let balance = localStorage.getItem("balance")
     this.state = {
       user:null,
+      balance: balance,
       movies: [],
       search: ""
     }
@@ -87,7 +94,6 @@ class Home extends Component{
   componentDidMount() {
     const user = localStorage.getItem("user");
     this.setState({user});
-    const {movies} = this.state;
     fetch("/api/get_movies", {
         method: 'GET',
         accept: 'application/json',
@@ -98,6 +104,8 @@ class Home extends Component{
         }
       });
   }
+
+
   handleSearch(){
     fetch("/api/get_movies?search="+this.state.search, {
         method: 'GET',
@@ -109,25 +117,30 @@ class Home extends Component{
         }
       });
   }
+  changeBalance(balance){
+    this.setState({balance:balance});
+  }
   render() {
     // const elements = ["1","2","3","4","5"];
     const {movies} = this.state;
     const Cards = movies.map((value, index) => {
       return (
         <Grid item xs={3}>
-          <CustomCard name={value.name} desc={value.desc} img={value.img} id={value.id}/>
+          <CustomCard name={value.name} desc={value.desc} img={value.img} id={value.id} price={value.price}
+                      own={value.own}
+                      changeBalance={(val)=> this.changeBalance(val)}/>
         </Grid>
       )
     });
     return (
       <div>
-        <Grid container style={{padding: 10}} justify="center">
+        <Grid container style={{padding: 10}} justify="center" alignItems="center">
           <Button variant="contained"
-                  style={{background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)', color: 'white'}}
+                  style={{background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)', color: 'white', margin:"auto"}}
                   component={Link} to={{
             pathname: '/upload',
           }}>Upload Movie</Button>
-          <Paper style={{marginLeft:20, padding:4}}>
+          <Paper style={{margin:"auto", padding:4}}>
             <InputBase
               placeholder="Search Movies"
               inputProps={{'aria-label': 'search movies'}}
@@ -138,6 +151,9 @@ class Home extends Component{
               <SearchIcon/>
             </IconButton>
           </Paper>
+         <Typography variant="h5" component="p" style={{margin:"auto", color:"green"}}>
+              Balance: ${this.state.balance}
+            </Typography>
         </Grid>
 
         <Grid container style={{padding: 50}} spacing={10}>
