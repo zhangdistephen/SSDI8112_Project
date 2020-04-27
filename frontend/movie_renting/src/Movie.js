@@ -55,15 +55,10 @@ class Movie extends Component{
     return (
       <Container maxWidth="lg" style={{padding:10}}>
         <Paper elevation={3} >
-          <Grid container>
-            <h1>
-            Name:{name}<br/>
-            Desc:{desc}<br/>
-            Img:{img}<br/>
-            Price:{price}<br/>
-            Comment:{comment}<br/>
-            </h1>
-          </Grid>
+          <Typography variant="h5" component = "p" style ={{color:"black"}}>Name:{name}</Typography>
+          <Typography variant="h5" component = "p" style ={{color:"black"}}>Description:{desc}</Typography>
+          <Typography variant="h5" component = "p" style ={{color:"black"}}>Price:${price}</Typography>
+          <Typography variant="h5" component = "p" style ={{color:"black"}}>Comment:{comment}</Typography>
         </Paper>
       </Container>
     );
